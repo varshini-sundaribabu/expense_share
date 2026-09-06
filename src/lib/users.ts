@@ -88,6 +88,11 @@ export async function authenticateUser(emailInput: string, password: string) {
   });
 }
 
+export async function getUserStatusByEmail(emailInput: string) {
+  const result = await pool.query("SELECT status FROM users WHERE email = $1", [normalizeEmail(emailInput)]);
+  return result.rows[0]?.status as string | undefined;
+}
+
 export async function getUserBySession(sessionToken: string) {
   const result = await pool.query(
     `SELECT u.id, u.display_name, u.email, u.phone_number, u.address, u.status, u.created_at, u.updated_at
@@ -97,4 +102,47 @@ export async function getUserBySession(sessionToken: string) {
     [sessionToken],
   );
   return result.rows[0] ? toProfile(result.rows[0]) : null;
+}
+
+export async function updateUser(userId: string, input: {
+  displayName: string;
+  email: string;
+  phoneNumber?: string;
+  address?: string;
+}) {
+  const result = await pool.query(
+    `UPDATE users
+     SET display_name = $1, email = $2, phone_number = $3, address = $4, updated_at = NOW()
+     WHERE id = $5
+     RETURNING id, display_name, email, phone_number, address, status, created_at, updated_at`,
+    [input.displayName.trim(), normalizeEmail(input.email), input.phoneNumber?.trim() || null, input.address?.trim() || null, userId],
+  );
+  return result.rows[0] ? toProfile(result.rows[0]) : null;
+}
+
+export async function deleteSession(sessionToken: string) {
+  await pool.query("DELETE FROM sessions WHERE token = $1", [sessionToken]);
+}
+
+export async function setUserStatus(userId: string, status: "active" | "deactivated") {
+  const result = await pool.query(
+    `UPDATE users SET status = $1, updated_at = NOW()
+     WHERE id = $2
+     RETURNING id, display_name, email, phone_number, address, status, created_at, updated_at`,
+    [status, userId],
+  );
+  return result.rows[0] ? toProfile(result.rows[0]) : null;
+}
+
+export async function deleteUser(userId: string) {
+  await pool.query("DELETE FROM users WHERE id = $1", [userId]);
+}
+
+export async function hasUnsettledObligations(userId: string) {
+  const result = await pool.query("SELECT unsettled_obligations FROM users WHERE id = $1", [userId]);
+  return Boolean(result.rows[0]?.unsettled_obligations);
+}
+
+export async function setUnsettledObligations(userId: string, value: boolean) {
+  await pool.query("UPDATE users SET unsettled_obligations = $1 WHERE id = $2", [value, userId]);
 }

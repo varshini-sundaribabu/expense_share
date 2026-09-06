@@ -43,15 +43,14 @@ test.describe("User registration", () => {
     await expect(registrationPage.page.getByText(/account created|welcome/i)).toBeVisible();
   });
 
-  test("UM-REG-002 stores optional phone and address fields @red", async ({ registrationPage, profilePage }) => {
-    test.fail();
+  test("UM-REG-002 stores optional phone and address fields", async ({ registrationPage, profilePage }) => {
     await registrationPage.goto();
     await registrationPage.fillRequired("Alex Morgan", uniqueEmail(), validPassword);
     await registrationPage.fillOptional("+1 202 555 0147", "42 Example Street, Test City");
     await registrationPage.submitAndWaitForSuccess();
     await profilePage.openFromRegistration();
-    await expect(profilePage.page.getByText("+1 202 555 0147")).toBeVisible();
-    await expect(profilePage.page.getByText("42 Example Street, Test City")).toBeVisible();
+    await expect(profilePage.phoneNumber).toHaveValue("+1 202 555 0147");
+    await expect(profilePage.address).toHaveValue("42 Example Street, Test City");
   });
 
   test("UM-REG-003 allows blank optional profile fields", async ({ registrationPage }) => {
@@ -76,24 +75,21 @@ test.describe("User registration", () => {
     await expect(registrationPage.alert).toContainText(/already exists/i);
   });
 
-  test("UM-VAL-004 rejects malformed email addresses @red", async ({ registrationPage }) => {
-    test.fail();
+  test("UM-VAL-004 rejects malformed email addresses", async ({ registrationPage }) => {
     await registrationPage.goto();
     await registrationPage.fillRequired("Alex Morgan", "alex.example.test", validPassword);
     await registrationPage.submit();
     await expect(registrationPage.alert).toContainText(/valid email|email/i);
   });
 
-  test("UM-VAL-007 rejects whitespace-only required values @red", async ({ registrationPage }) => {
-    test.fail();
+  test("UM-VAL-007 rejects whitespace-only required values", async ({ registrationPage }) => {
     await registrationPage.goto();
     await registrationPage.fillRequired("   ", "   ", "   ");
     await registrationPage.submit();
     await expect(registrationPage.alert).toBeVisible();
   });
 
-  test("UM-VAL-008 enforces documented field length boundaries @red", async ({ registrationPage }) => {
-    test.fail();
+  test("UM-VAL-008 enforces documented field length boundaries", async ({ registrationPage }) => {
     await registrationPage.goto();
     await registrationPage.fillRequired("A".repeat(101), uniqueEmail(), validPassword);
     await registrationPage.submit();
@@ -110,15 +106,16 @@ test.describe("User registration", () => {
     await registrationPage.page.keyboard.press("Tab");
     await registrationPage.page.keyboard.type(validPassword);
     await registrationPage.page.keyboard.press("Tab");
+    await registrationPage.page.keyboard.press("Tab");
+    await registrationPage.page.keyboard.press("Tab");
     await expect(registrationPage.page.locator(":focus")).toHaveRole("button");
   });
 
-  test("UM-A11Y-002 associates validation errors with form fields @red @a11y", async ({ registrationPage }) => {
-    test.fail();
+  test("UM-A11Y-002 associates validation errors with form fields @a11y", async ({ registrationPage }) => {
     await registrationPage.goto();
     await registrationPage.submit();
     await expect(registrationPage.displayName).toHaveAttribute("aria-invalid", "true");
-    await expect(registrationPage.page.getByRole("alert")).toBeVisible();
+    await expect(registrationPage.alert).toBeVisible();
   });
 
   test("UM-RES-001 preserves valid values after a validation error", async ({ registrationPage }) => {
@@ -131,8 +128,7 @@ test.describe("User registration", () => {
     await expect(registrationPage.email).toHaveValue(email);
   });
 
-  test("UM-RES-002 shows failure without false success when storage fails @red", async ({ registrationPage }) => {
-    test.fail();
+  test("UM-RES-002 shows failure without false success when storage fails", async ({ registrationPage }) => {
     await registrationPage.page.route("**/api/register", (route) => route.abort("failed"));
     await registrationPage.goto();
     await registrationPage.fillRequired("Alex Morgan", uniqueEmail("storage-failure"), validPassword);

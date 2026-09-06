@@ -46,8 +46,7 @@ test.describe("User persistence", () => {
     await context.close();
   });
 
-  test("UM-PER-005 isolates private data between users @red @security", async ({ browser }) => {
-    test.fail();
+  test("UM-PER-005 isolates private data between users @security", async ({ browser }) => {
     const firstContext = await browser.newContext();
     const firstPage = await firstContext.newPage();
     const firstUser = await registerUser(new RegistrationPage(firstPage), { email: uniqueEmail("isolated-a") });
@@ -55,6 +54,7 @@ test.describe("User persistence", () => {
     const secondContext = await browser.newContext();
     const secondPage = await secondContext.newPage();
     const secondUser = await registerUser(new RegistrationPage(secondPage), { email: uniqueEmail("isolated-b") });
+    await secondPage.goto("/profile");
     await expect(secondPage.getByText(firstUser.email)).not.toBeVisible();
     await expect(secondPage.getByText(secondUser.email)).toBeVisible();
     await secondContext.close();

@@ -36,8 +36,7 @@ test.describe("Authentication, authorization, and privacy", () => {
     expect(body).not.toContain("password_hash");
   });
 
-  test("UM-AUTH-005 blocks protected access after sign-out @red @security", async ({ page, registrationPage, signInPage, profilePage }) => {
-    test.fail();
+  test("UM-AUTH-005 blocks protected access after sign-out @security", async ({ page, registrationPage, signInPage, profilePage }) => {
     const user = await registerUser(registrationPage, { email: uniqueEmail("sign-out") });
     await signIn(signInPage, user);
     await profilePage.signOut();
@@ -50,10 +49,9 @@ test.describe("Authentication, authorization, and privacy", () => {
     await expect(page).toHaveURL(/\/sign-in$/);
   });
 
-  test("UM-SEC-002 prevents user A from editing user B @red @security", async ({ page }) => {
-    test.fail();
+  test("UM-SEC-002 prevents user A from editing user B @security", async ({ page }) => {
     await page.goto("/profile/user-b");
-    await expect(page.getByRole("alert")).toContainText(/not authorized|forbidden/i);
+    await expect(page.locator("p[role='alert']")).toContainText(/not authorized|forbidden/i);
   });
 
   test("UM-SEC-003 keeps credentials out of URLs and browser storage", async ({ page, registrationPage }) => {

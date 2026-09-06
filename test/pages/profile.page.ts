@@ -8,7 +8,7 @@ export class ProfilePage {
   readonly phoneNumber: Locator;
   readonly address: Locator;
   readonly saveButton: Locator;
-  readonly signOutLink: Locator;
+  readonly signOutButton: Locator;
   readonly deactivateButton: Locator;
   readonly deleteButton: Locator;
   readonly confirmButton: Locator;
@@ -23,7 +23,7 @@ export class ProfilePage {
     this.phoneNumber = page.getByLabel("Phone number");
     this.address = page.getByLabel("Address");
     this.saveButton = page.getByRole("button", { name: /save/i });
-    this.signOutLink = page.getByRole("link", { name: /sign out/i });
+    this.signOutButton = page.getByRole("button", { name: /sign out/i });
     this.deactivateButton = page.getByRole("button", { name: /deactivate account/i });
     this.deleteButton = page.getByRole("button", { name: /delete account/i });
     this.confirmButton = page.getByRole("button", { name: /confirm/i });
@@ -51,12 +51,12 @@ export class ProfilePage {
   }
 
   async signOut() {
-    await this.signOutLink.click();
+    await this.signOutButton.click();
   }
 
   async deactivate() {
     await this.deactivateButton.click();
-    await this.confirmButton.click();
+    await this.page.getByRole("button", { name: /confirm/i }).click();
   }
 
   async deleteAccount() {

@@ -12,6 +12,9 @@ export async function POST(request: Request) {
   if (!displayName) {
     return NextResponse.json({ error: "Display name is required." }, { status: 400 });
   }
+  if (displayName.length > 100) {
+    return NextResponse.json({ error: "Display name must be 100 characters or fewer." }, { status: 400 });
+  }
   if (!email.trim()) {
     return NextResponse.json({ error: "Email is required." }, { status: 400 });
   }

@@ -6,9 +6,12 @@ CREATE TABLE IF NOT EXISTS users (
   phone_number VARCHAR(32),
   address TEXT,
   status VARCHAR(20) NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'deactivated', 'pendingDeletion')),
+  unsettled_obligations BOOLEAN NOT NULL DEFAULT FALSE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+ALTER TABLE users ADD COLUMN IF NOT EXISTS unsettled_obligations BOOLEAN NOT NULL DEFAULT FALSE;
 
 CREATE TABLE IF NOT EXISTS sessions (
   token UUID PRIMARY KEY,
