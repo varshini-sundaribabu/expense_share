@@ -1,0 +1,42 @@
+{
+  "name": "proj-1",
+  "version": "1.0.0",
+  "description": "Expense Sharer is a shared-expense tracker for recording group purchases, splitting the cost fairly, and keeping track of who owes whom. It is intended as a test-first demonstration project built with TypeScript, Next.js, and Playwright.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "db:wait": "node scripts/wait-for-db.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:acceptance": "playwright test --grep-invert @red",
+    "test:e2e:red": "playwright test --grep @red"
+  },
+  "keywords": [],
+  "author": "Varshini Sundari Babu",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "next": "^16.3.4",
+    "pg": "^8.23.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^26.4.1",
+    "@types/pg": "^8.23.1",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.3.4",
+    "typescript": "^5.9.3"
+  }
+}

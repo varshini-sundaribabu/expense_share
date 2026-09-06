@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: expense_sharer
+      POSTGRES_USER: expense_sharer
+      POSTGRES_PASSWORD: expense_sharer_dev
+    ports:
+      - "15432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U expense_sharer -d expense_sharer"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  expense-sharer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3200:3200"
+    environment:
+      NODE_ENV: production
+      PORT: 3200
+      HOSTNAME: 0.0.0.0
+      DATABASE_URL: postgresql://expense_sharer:expense_sharer_dev@postgres:5432/expense_sharer
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
