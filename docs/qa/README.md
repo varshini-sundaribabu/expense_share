@@ -48,6 +48,19 @@ User Management uses the prefix `UM`:
 - `UM-A11Y-*` - Accessibility
 - `UM-RES-*` - Resilience and reliability
 
+Expense Creation and Splitting uses the prefix `EX`:
+
+- `EX-CREATE-*` - Expense creation and optional metadata
+- `EX-VAL-*` - Expense field validation and boundaries
+- `EX-PART-*` - Participants and payer rules
+- `EX-SPLIT-EQUAL-*` - Equal splits and rounding
+- `EX-SPLIT-PERCENT-*` - Percentage splits
+- `EX-SPLIT-FIXED-*` - Fixed-amount splits
+- `EX-DATA-*` - Persistence, atomicity, and data integrity
+- `EX-SEC-*` - Authorization and privacy
+- `EX-RES-*` - Resilience and failure recovery
+- `EX-A11Y-*` - Accessibility and keyboard workflows
+
 IDs are stable. Do not reuse an ID after a case is removed; split a case into a new ID when its behavior changes materially.
 
 ## Priority And Status
